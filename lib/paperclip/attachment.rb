@@ -343,6 +343,7 @@ module Paperclip
       begin
         assign(self)
         save
+        instance.reload && instance.save
       rescue Errno::EACCES => e
         warn "#{e} - skipping file."
         false
