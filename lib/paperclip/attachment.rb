@@ -348,7 +348,7 @@ module Paperclip
         puts 'reprocess save'
         save
         puts 'reprocess instance save'
-        instance.save
+        # instance.save
         puts 'reprocess instance after save'
       rescue Errno::EACCES => e
         warn "#{e} - skipping file."
