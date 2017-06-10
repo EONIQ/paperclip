@@ -561,7 +561,10 @@ module Paperclip
 
     def interpolate(pattern, style_name = default_style) #:nodoc:
       puts 'interpolate'
-      interpolator.interpolate(pattern, self, style_name)
+      puts pattern.inspect
+      new_pattern = interpolator.interpolate(pattern, self, style_name)
+      puts new_pattern.inspect
+      new_pattern
     end
 
     def queue_some_for_delete(*styles)
