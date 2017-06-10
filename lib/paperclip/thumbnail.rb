@@ -64,6 +64,10 @@ module Paperclip
     # Performs the conversion of the +file+ into a thumbnail. Returns the Tempfile
     # that contains the new image.
     def make
+      puts 'testing @file'
+      puts @file
+      puts @file.inspect
+
       src = @file
       filename = [@basename, @format ? ".#{@format}" : ""].join
       dst = TempfileFactory.new.generate(filename)
