@@ -244,7 +244,10 @@ module Paperclip
       if process.any? && !process.include?(:original)
         @queued_for_write.except!(:original)
       end
+      puts self.inspect
+      puts 'before_flush_writes'
       flush_writes
+      puts 'after_flush_writes'
       @dirty = false
       true
     end
@@ -342,8 +345,11 @@ module Paperclip
       saved_preserve_files, @options[:preserve_files] = @options[:preserve_files], true
       begin
         assign(self)
+        puts 'reprocess save'
         save
+        puts 'reprocess instance save'
         instance.save
+        puts 'reprocess instance after save'
       rescue Errno::EACCES => e
         warn "#{e} - skipping file."
         false
