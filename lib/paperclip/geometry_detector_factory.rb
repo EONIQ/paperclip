@@ -19,7 +19,7 @@ module Paperclip
         Paperclip.run(
           "identify",
           "-format '%wx%h,#{orientation}' :file", {
-            :file => "#{path}[0]"
+            :file => "#{url}[0]"
           }, {
             :swallow_stderr => true
           }
@@ -29,6 +29,10 @@ module Paperclip
       rescue Cocaine::CommandNotFoundError => e
         raise_because_imagemagick_missing
       end
+    end
+
+    def url
+      @file.respond_to?(:url) ? @file.url : @file
     end
 
     def path
