@@ -102,7 +102,7 @@ module Paperclip
 
       def flush_writes
         for style, file in @queued_for_write do
-          log("saving #{path(style)}")
+          log("fog saving #{path(style)}")
           retried = false
           begin
             attributes = fog_file.merge(

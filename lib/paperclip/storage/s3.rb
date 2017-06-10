@@ -360,7 +360,7 @@ module Paperclip
         @queued_for_write.each do |style, file|
         retries = 0
           begin
-            log("saving #{path(style)}")
+            log("s3 saving #{path(style)}")
             write_options = {
               :content_type => file.content_type,
               :acl => s3_permissions(style)
