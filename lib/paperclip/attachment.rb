@@ -589,6 +589,7 @@ module Paperclip
     end
 
     def unlink_files(files)
+      puts 'unlink'
       Array(files).each do |file|
         file.close unless file.closed?
         file.unlink if file.respond_to?(:unlink) && file.path.present? && File.exist?(file.path)
