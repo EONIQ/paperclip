@@ -244,10 +244,7 @@ module Paperclip
       if process.any? && !process.include?(:original)
         @queued_for_write.except!(:original)
       end
-      puts self.inspect
-      puts 'before_flush_writes'
       flush_writes
-      puts 'after_flush_writes'
       @dirty = false
       true
     end
@@ -345,11 +342,7 @@ module Paperclip
       saved_preserve_files, @options[:preserve_files] = @options[:preserve_files], true
       begin
         assign(self)
-        puts 'reprocess save'
         save
-        puts 'reprocess instance save'
-        # instance.save
-        puts 'reprocess instance after save'
       rescue Errno::EACCES => e
         warn "#{e} - skipping file."
         false
@@ -512,8 +505,6 @@ module Paperclip
     def post_process(*style_args) #:nodoc:
       return if @queued_for_write[:original].nil?
 
-      puts 'post_process'
-
       instance.run_paperclip_callbacks(:post_process) do
         instance.run_paperclip_callbacks(:"#{name}_post_process") do
           if !@options[:check_validity_before_processing] || !instance.errors.any?
@@ -524,7 +515,6 @@ module Paperclip
     end
 
     def post_process_styles(*style_args) #:nodoc:
-      puts 'post_process_styles'
       post_process_style(:original, styles[:original]) if styles.include?(:original) && process_style?(:original, style_args)
       styles.reject{ |name, style| name == :original }.each do |name, style|
         post_process_style(name, style) if process_style?(name, style_args)
@@ -539,16 +529,12 @@ module Paperclip
 
         @queued_for_write[name] = style.processors.
           reduce(original) do |file, processor|
-          puts 'post_process_style file.inspect'
-          puts file.inspect
           file = Paperclip.processor(processor).make(file, style.processor_options, self)
           intermediate_files << file unless file == @queued_for_write[:original]
           file
         end
 
         unadapted_file = @queued_for_write[name]
-        puts '@queued_for_write[name]'
-        puts @queued_for_write[name]
         @queued_for_write[name] = Paperclip.io_adapters.
           for(@queued_for_write[name], @options[:adapter_options])
         unadapted_file.close if unadapted_file.respond_to?(:close)
@@ -566,11 +552,7 @@ module Paperclip
     end
 
     def interpolate(pattern, style_name = default_style) #:nodoc:
-      puts 'interpolate'
-      puts pattern.inspect
-      new_pattern = interpolator.interpolate(pattern, self, style_name)
-      puts new_pattern.inspect
-      new_pattern
+      interpolator.interpolate(pattern, self, style_name)
     end
 
     def queue_some_for_delete(*styles)
@@ -602,12 +584,10 @@ module Paperclip
 
     # called by storage after the writes are flushed and before @queued_for_write is cleared
     def after_flush_writes
-      puts 'after_flush_writes'
       unlink_files(@queued_for_write.values)
     end
 
     def unlink_files(files)
-      puts 'unlink_files(files)'
       Array(files).each do |file|
         file.close unless file.closed?
         file.unlink if file.respond_to?(:unlink) && file.path.present? && File.exist?(file.path)
