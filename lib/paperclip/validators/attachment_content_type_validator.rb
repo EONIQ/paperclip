@@ -28,10 +28,6 @@ module Paperclip
       end
 
       def validate_whitelist(record, attribute, value)
-        puts 'validate_whitelist'
-        puts allowed_types.inspect
-        puts value.inspect
-        
         if allowed_types.present? && allowed_types.none? { |type| type === value }
           mark_invalid record, attribute, allowed_types
         end
